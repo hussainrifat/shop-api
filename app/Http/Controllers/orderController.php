@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Dotenv\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class orderController extends Controller
 {
@@ -77,9 +78,47 @@ class orderController extends Controller
             return ["Result" => "Operation Failed"];
         }
 
+    }
 
 
+    /**
+     * @name addToCart
+     * @role products add to cart
+     * @param \Illuminate\Http\Request  $request
+     * @return json data
+     *
+     */
 
+    public function addToCart(Request $request)
+    {
+
+        if (Auth::check()) {
+
+            $id=auth()->user()->id;
+
+            if($carts=cart::where('product_id',$request->product_id)->where('user_id',$id)->where('active_status','0')->first())
+            {
+                $old_cart=$carts->product_quantity;
+                $new_cart=$request->product_quantity;
+                $new= $old_cart+$new_cart;
+
+                cart::where('user_id',$id)->where('product_id',$request->product_id)->update(['product_quantity'=>$new]);
+
+            }
+
+            else
+            {
+                cart::create([
+                    'user_id'=>$id,
+                    'product_id'=>$request->product_id,
+                    'product_quantity'=>$request->product_quantity,
+                    ]);
+            }
+
+            return ["Result" => "Added to Cart"];
+        }
+        
+        else return ["Result" => "Login First"];
     }
 
 }

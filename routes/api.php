@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\orderController;
-
+use App\Http\Controllers\userController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +22,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('view-order',[orderController::class,'viewOrder']);
 Route::post('store-order',[orderController::class,'storeOrder']);
+
+
+Route::post('create-user',[userController::class,'createUser']);
+
+Route::post('add-item',[orderController::class,'addToCart']);
+
